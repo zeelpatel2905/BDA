@@ -1,0 +1,54 @@
+use bmiit2022
+
+db.createCollection('Students')
+
+db.Students.insert({enro:4,Fname:'Isha',Lname:'Motiyani',City:'Surat',Gender:'F',ContactNo:	9874563210,DOB:'12/09/2000'})
+db.Students.insert({enro:102,Fname:'Anish',Lname:'Patel',City:'Valsad',Gender:'M',ContactNo:	9632587410,DOB:'06/01/2001'})
+db.Students.insert({enro:103,Fname:'Kalp',Lname:'Shah',City:'Baroda',Gender:'M',ContactNo:	9630125874,DOB:'13/10/2000'})
+db.Students.insert({enro:104,Fname:'Yash',Lname:'Bhakta',City:'Mumbai',Gender:'M',ContactNo:	9987452103,DOB:'08/05/2001'})
+db.Students.insert({enro:84,Fname:'Aparana',Lname:'Mukherjee',City:'Surat',Gender:'F',ContactNo:	8563247890,DOB:'26/06/2001'})
+db.Students.insert({enro:
+8,Fname:'Arjun',Lname:'Poduval',City:'Vapi',Gender:'M',ContactNo:	8965230147,DOB:'01/05/2001'})
+db.Students.insert({enro:
+105,Fname:'Riya',Lname:'Agrawal',City:'Navsari',Gender:'F',ContactNo:	6985321470,DOB:'02/09/2000'})
+db.Students.insert({enro:
+79,Fname:'Monis',Lname:'Khan',City:'Bardoli',Gender:'M',ContactNo:	7895231053,DOB:'23/11/2000'})
+db.Students.insert({enro:
+106,Fname:'Abhishek',Lname:'Choksi',City:'Surat',Gender:'M',ContactNo:	6985327410,DOB:'18/07/2001'})
+db.Students.insert({enro:
+49,Fname:'Om',Lname:'Patel',City:'Valsad',Gender:'M',ContactNo:	9985632100,DOB:'15/05/2001'})
+
+1.db.Students.find()
+2.db.Students.find({},{Fname:1,Lname:1,_id:0}).pretty()
+3.db.Students.distinct("City")
+4.db.Students.find({},{DOB:1,Fname:1,Lname:1,_id:0}).pretty()
+5.db.Students.find({City:'Surat'}).pretty()
+6.db.Students.find({},{_id:0}).sort({enro:1})
+7.db.Students.find({},{_id:0}).limit(5)
+8.db.Students.find({},{_id:0}).sort({_id:-1}).limit(3)
+9.db.Students.find({City:'Valsad',Gender:'M'}).pretty()
+10.db.Students.find({},{_id:0}).sort({_id:-1})
+11.db.Students.find({City:'Valsad'}).limit(4)
+12.db.Students.update({Fname:'Monis'},{$set:{ContactNo:6852987530,DOB:'06/01/1999'}}); db.Students.find()
+13.db.Students.find({Fname:'Om'},{'DOB':1,'_id':0})
+
+14.db.Students.insert({enro:
+100,Fname:'Rohit',Lname:'Mehera',City:'Mumbai',DOB:'24/03/2003'})
+
+15.db.Students.find({Gender:'M',Lname:'Patel'},{_id:0})
+
+16.db.Students.insert({enro:
+35,Fname:'Priyank',Lname:'Mistry',City:'Anand',DOB:'18/06/2000',ContactNo:'9000800001)'})
+
+17.db.Students.find({enro:102},{_id:0})
+18.db.Students.find({Gender:{$eq:null}},{_id:0})
+
+19.db.Students.update({enro:100},{$set:{Gender:'M',ContactNo:9548978546}});
+db.Students.update({enro:35},{$set:{Gender:'M'}})
+
+20.db.Students.remove({City:'Vapi'})
+21.db.Students.find().skip(5).limit(5)
+22.db.Students.find({Fname:/^.a/})
+23.db.Students.find({City:/^M/})
+24.db.Students.count()
+25.db.Students.remove({})

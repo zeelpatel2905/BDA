@@ -1,0 +1,64 @@
+use bmiit2022
+
+db.createCollection('Items')
+
+db.Items.insert({Id:"TP01",Name:"Talcom Powder",Manufacturer:"Persona",Price:40,Qty:45,StockDate:"11-02-18",Dealer:"Krishna Cosmetik"});
+db.Items.insert({Id:"FW05",Name:"Face Wash",Manufacturer:"Attitude",Price:45,Qty:55,StockDate:"15-04-18",Dealer:"Surbhi Collection"});
+db.Items.insert({Id:"BS01",Name:"Bath Soap",Manufacturer:"Persona",Price:55,Qty:80,StockDate:"11-02-18",Dealer:"Krishna Cosmetik"});
+db.Items.insert({Id:"SH06",Name:"Shampoo",Manufacturer:"Patanjali",Price:12,Qty:50,StockDate:"05-01-17",Dealer:"Surbhi Collection"});
+db.Items.insert({Id:"FW12",Name:"Face Wash",Manufacturer:"Loreal",Price:95,Qty:45,StockDate:"05-01-16",Dealer:"Surbhi Collection"});
+db.Items.insert({Id:"S5005",Name:"Ball Pen 0.5",Manufacturer:"Nataraj Classic",Price:16,Qty:100,StockDate:"31-03-10",Dealer:"Clear Deals"});
+db.Items.insert({Id:"S5003",Name:"Ball Pen 0.25",Manufacturer:"Nataraj Classic",Price:20,Qty:150,StockDate:"01-01-10",Dealer:"Clear Deals"});
+db.Items.insert({Id:"S5002",Name:"Gel Pen Premium",Manufacturer:"Pilot Juice",Price:14,Qty:125,StockDate:"14-02-10",Dealer:"Reliable Stationers"});
+db.Items.insert({Id:"S5006",Name:"Gel Pen Classic",Manufacturer:"Pilot Juice",Price:22,Qty:200,StockDate:"01-01-10",Dealer:"Reliable Stationers"});
+db.Items.insert({Id:"S5001",Name:"Eraser Small",Manufacturer:"Apsara",Price:15,Qty:210,StockDate:"19-03-09",Dealer:"Clear Deals"});
+db.Items.insert({Id:"S5004",Name:"Eraser Big",Manufacturer:"Apsara",Price:10,Qty:60,StockDate:"12-12-09",Dealer:"Clear Deals"});
+db.Items.insert({Id:"S5009",Name:"Sharper Classic",Manufacturer:"Nataraj Classic",Price:18,Qty:160,StockDate:"23-01-09",Dealer:"Classic Plastics"});
+
+1.db.Items.find({Manufacturer:"Persona"},{Name:1,Price:1,_id:0});
+2.db.Items.distinct("Manufacturer").length;
+3.db.Items.find({Name:/^Sh/},{Name:1,_id:0})
+4.db.Items.find({Name:/Pen/},{Name:1,_id:0})
+5.db.Items.find({Price:{$gt:80}},{Name:1,Price:1,Qty:1,_id:0});
+6.db.Items.find({Price:{$lte:20}},{Name:1,Price:1,_id:0});
+7.db.Items.find({$or:[{Dealer:'Clear Deals'},{Qty:{$gt:100}}]});
+8.db.Items.find({$and:[{Qty:{$gte:50}},{Qty:{$lte:100}}]});
+db.Items.update({},{$inc:{Price:10}},{multi:true})
+db.Items.update({},{$inc:{Qty:-30}},{multi:true})
+db.Items.update({},{$mul:{Price:0.15}},{multi:true})
+12.db.Items.aggregate({$group:{_id:0,"MaxPrice":{$max:"$Price"},"MinPrice":{$min:"$Price"}}})
+13.db.Items.aggregate({$group:{_id:0,"AveragePrice":{$avg:"$Price"}}})
+14.db.Items.aggregate({$group:{_id:0,"SumOfItems":{$sum:"$Qty"},"Average":{$avg:"$Qty"}}})
+15.db.Items.aggregate({$project:{_id:0,msg:{$concat:["$Name"," price is ",{$toString:"$Price"}]}}})
+16.db.Items.aggregate({$project:{_id:0,msg:{$concat:["$Name"," stock date is ","$StockDate"]}}})
+17.
+18.db.Items.find().sort({Name:1})
+19.db.Items.find().sort({StockDate:-1})
+20.db.Items.find({Dealer:{$nin:["Reliable Stationers","Clear Deals","Krishna Cosmetik"]}},{_id:-1,Manufacturer:1})
+21.db.Items.aggregate({$project:{_id:0,Items:{$toUpper:"$Name"}}})
+22.db.Items.aggregate({$project:{_id:0,Item:"$Name",Length:{$strLenCP:"$Name"}}})
+23.db.Items.aggregate({$project:{_id:0,Manufacturer:{$toLower:"$Manufacturer"}}})
+24.db.Items.find().distinct('Dealer').length
+25.db.Items.aggregate({$group:{_id:"$Dealer",Items:{$sum:1}}})
+26.db.Items.aggregate({$group:{_id:"$Dealer","MaxPriceItem":{$max:"$Price"}}})
+27.db.Items.aggregate({$match:{StockDate:"01-01-10"}},{$group:{_id:"$StockDate","TotalAmountPrice":{$sum:"$Price"}}})
+28.
+29.db.Items.aggregate({$group:{_id:"$Manufacturer","ItemPrice":{$min:"$Price"}}})
+30.db.Items.remove({})
+
+//Import-Export
+mongoexport --jsonArray --db bmiit2022 --collection Items --out <Location>\File.json
+mongoimport --jsonArray --db bmiit2022 --collection Items --file <Location>\File.json
+//MapReduce
+db.Items.mapReduce(
+    function () {
+    emit(this.Manufacturer,this.Price);
+    },
+    function (key,values) {
+    return Array.sum(values)
+    },
+    {})
+//MapReduce - Optional
+    map function () {emit(this.Manufacturer,this.Price)}
+    reduce function (key,values) {return Array.sum(values)}
+    db.Items.mapReduce(map,reduce,{out:"Data"})
