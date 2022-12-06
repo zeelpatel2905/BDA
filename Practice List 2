@@ -47,8 +47,13 @@ db.Items.update({},{$mul:{Price:0.15}},{multi:true})
 30.db.Items.remove({})
 
 //Import-Export
-mongoexport --jsonArray --db bmiit2022 --collection Items --out <Location>\File.json
+mongoexport --jsonArray --db bmiit2022 --collection Items --fieldFile <Location>\File.txt --out <Location>\File.json
 mongoimport --jsonArray --db bmiit2022 --collection Items --file <Location>\File.json
+
+//Optional If Above Not Working
+mongoexport --db test --collection Cutsomer --csv --fieldFile fields.txt --out output.txt
+mongoimport --db test --collection SampleJSON --type csv --headerline --file sample.txt
+
 //MapReduce
 db.Items.mapReduce(
     function () {
